@@ -1,0 +1,85 @@
+// Config file of V2Ray. This file follows standard JSON format, with comments support.
+// Uncomment entries below to satisfy your needs. Also read our manual for more detail at
+// https://www.v2ray.com/
+{
+  "log": {
+    // By default, V2Ray writes access log to stdout.
+    // "access": "/path/to/access/log/file",
+
+    // By default, V2Ray write error log to stdout.
+    // "error": "/path/to/error/log/file",
+
+    // Log level, one of "debug", "info", "warning", "error", "none"
+    "loglevel": "warning"
+  },
+  // List of inbound proxy configurations.
+  "inbounds": [{
+    // Port to listen on. You may need root access if the value is less than 1024.
+    "port": 1085,
+
+    // IP address to listen on. Change to "0.0.0.0" to listen on all network interfaces.
+    "listen": "0.0.0.0",
+
+    // Tag of the inbound proxy. May be used for routing.
+    "tag": "socks-inbound",
+
+    // Protocol name of inbound proxy.
+    "protocol": "socks",
+
+    // Settings of the protocol. Varies based on protocol.
+    "settings": {
+      "auth": "noauth",
+      "udp": false,
+      "ip": "127.0.0.1"
+    },
+
+    // Enable sniffing on TCP connection.
+    "sniffing": {
+      "enabled": true,
+      // Target domain will be overriden to the one carried by the connection, if the connection is HTTP or HTTPS.
+      "destOverride": ["http", "tls"]
+    }
+  }],
+  // List of outbound proxy configurations.
+  "outbounds": [{
+    // Protocol name of the outbound proxy.
+    "protocol": "vmess",
+
+    // Settings of the protocol. Varies based on protocol.
+    "settings": {"vnext": [{
+      "address": "207.246.107.133", // 服务器地址，请修改为你自己的服务器 ip 或域名
+      "port": 18712,  // 服务器端口
+      "users": [{ "id": "c3c48035-2365-4c60-8754-29edde19cb58" }]
+    }]},
+
+    // Tag of the outbound. May be used for routing.
+    "tag": "proxy"
+  },{
+    "protocol": "blackhole",
+    "settings": {},
+    "tag": "blocked"
+  },{
+    "protocol":"freedom",
+    "settings":{},
+    "tag":"direct"
+  }],
+  "routing":{
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": ["geosite:cn"] // 中国大陆主流网站的域名
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "geoip:cn", // 中国大陆的 IP
+          "geoip:private" // 私有地址 IP，如路由器等
+        ]
+      }
+    ]
+  }
+
+}
